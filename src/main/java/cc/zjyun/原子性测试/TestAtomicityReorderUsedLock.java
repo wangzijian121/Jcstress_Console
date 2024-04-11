@@ -1,4 +1,4 @@
-package cc.zjyun.test_record_2;
+package cc.zjyun.原子性测试;
 
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.Z_Result;

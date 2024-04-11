@@ -1,9 +1,10 @@
-package cc.zjyun.test_record_1;
+package cc.zjyun.有序性测试;
 
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.I_Result;
 
 /**
+ * @author zijian Wang
  * @Description 使用jcstress测试指令重排序
  */
 
