@@ -26,9 +26,6 @@ package cc.zjyun.github_demo;
 
 import org.openjdk.jcstress.annotations.*;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-
 import static org.openjdk.jcstress.annotations.Expect.*;
 
 /**
@@ -107,48 +104,7 @@ public class BasicJMM_04_Progress {
         }
     }
 
-    /*
 
-      ----------------------------------------------------------------------------------------------------------
-
-        事实上，绝大多数硬件最终都使写入变得可见，所以我们最少的
-        想要的是使访问对优化编译器不透明。幸运的是，这很容易做到
-        VarHandles。{设置|获取}不透明。
-
-        Indeed, this is guaranteed to happen on all platforms:
-
-              RESULT  SAMPLES     FREQ      EXPECT  DESCRIPTION
-               STALE        0    0.00%   Forbidden  Test is stuck
-          TERMINATED   17,902  100.00%  Acceptable  Gracefully finished
-     */
-
-    @JCStressTest(Mode.Termination)
-    @Outcome(id = "TERMINATED", expect = ACCEPTABLE, desc = "Gracefully finished")
-    @Outcome(id = "STALE", expect = FORBIDDEN, desc = "Test is stuck")
-    @State
-    public static class OpaqueSpin {
-        static final VarHandle VH;
-
-        static {
-            try {
-                VH = MethodHandles.lookup().findVarHandle(OpaqueSpin.class, "ready", boolean.class);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        boolean ready;
-
-        @Actor
-        public void actor1() {
-            while (!(boolean) VH.getOpaque(this)) ; // spin
-        }
-
-        @Signal
-        public void signal() {
-            VH.setOpaque(this, true);
-        }
-    }
 
     /*
       ----------------------------------------------------------------------------------------------------------

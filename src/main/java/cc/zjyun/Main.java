@@ -12,7 +12,7 @@ public class Main {
          * 不指定testName 时会全局搜索 JCStressTest 类，不建议置为空
          */
         String param = "-t";
-        String testName = "TestAtomicityReorderUsedLock";
+        String testName = "TestInstructionReorder";
 
         if (("").equals(testName) || !("-t").equals(param)) {
             System.out.println("不建议使用全局搜索类名！");

@@ -26,8 +26,7 @@ package cc.zjyun.可见性;
 
 import org.openjdk.jcstress.annotations.*;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
+
 
 import static org.openjdk.jcstress.annotations.Expect.*;
 

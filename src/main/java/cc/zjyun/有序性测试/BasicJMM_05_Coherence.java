@@ -30,13 +30,12 @@ import org.openjdk.jcstress.annotations.Outcome;
 import org.openjdk.jcstress.annotations.State;
 import org.openjdk.jcstress.infra.results.II_Result;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 
 import static org.openjdk.jcstress.annotations.Expect.*;
 
 /**
  * 指令重排序 导致的有序性问题
+ *
  * @author zijian Wang
  */
 public class BasicJMM_05_Coherence {
@@ -57,7 +56,7 @@ public class BasicJMM_05_Coherence {
     */
 
     @JCStressTest
-    @Outcome(id = "0, 0", expect = ACCEPTABLE, desc = "尽早进行两次读取.")
+    @Outcome(id = "0,0", expect = ACCEPTABLE, desc = "尽早进行两次读取.")
     @Outcome(id = "1, 1", expect = ACCEPTABLE, desc = "做这两件事都读得很晚。")//常识
     @Outcome(id = "0, 1", expect = ACCEPTABLE, desc = "做先读早，不足为奇。")
     @Outcome(id = "1, 0", expect = ACCEPTABLE_INTERESTING, desc = "第一次阅读早早就看到了饶有趣味的价值，第二次阅读也是如此")
@@ -144,61 +143,4 @@ public class BasicJMM_05_Coherence {
             r.r2 = h2.a;
         }
     }
-
-    /*
-      ----------------------------------------------------------------------------------------------------------
-
-        VarHandles的“不透明”模式也提供了一致性。
-
-          RESULT      SAMPLES     FREQ      EXPECT  DESCRIPTION
-            0, 0   22,265,880    6.07%  Acceptable  Doing both reads early.
-            0, 1      147,500    0.04%  Acceptable  Doing first read early, not surprising.
-            1, 0            0    0.00%   Forbidden  Violates coherence.
-            1, 1  344,427,964   93.89%  Acceptable  Doing both reads late.
-     */
-
-    @JCStressTest
-    @Outcome(id = "0, 0", expect = ACCEPTABLE, desc = "Doing both reads early.")
-    @Outcome(id = "1, 1", expect = ACCEPTABLE, desc = "Doing both reads late.")
-    @Outcome(id = "0, 1", expect = ACCEPTABLE, desc = "Doing first read early, not surprising.")
-    @Outcome(id = "1, 0", expect = FORBIDDEN, desc = "Violates coherence.")
-    @State
-    public static class SameOpaqueRead {
-
-        static final VarHandle VH;
-
-        static {
-            try {
-                VH = MethodHandles.lookup().findVarHandle(Holder.class, "a", int.class);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        private final Holder h1 = new Holder();
-        private final Holder h2 = h1;
-
-        private static class Holder {
-            int a;
-            int trap;
-        }
-
-        @Actor
-        public void actor1() {
-            VH.setOpaque(h1, 1);
-        }
-
-        @Actor
-        public void actor2(II_Result r) {
-            Holder h1 = this.h1;
-            Holder h2 = this.h2;
-
-            h1.trap = 0;
-            h2.trap = 0;
-
-            r.r1 = (int) VH.getOpaque(h1);
-            r.r2 = (int) VH.getOpaque(h2);
-        }
-    }
-
 }

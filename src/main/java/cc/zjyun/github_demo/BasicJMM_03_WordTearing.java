@@ -27,8 +27,6 @@ package cc.zjyun.github_demo;
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.ZZ_Result;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.util.BitSet;
 
 import static org.openjdk.jcstress.annotations.Expect.*;
@@ -117,55 +115,5 @@ public class BasicJMM_03_WordTearing {
         }
     }
 
-    /*
-      ----------------------------------------------------------------------------------------------------------
-
-        当没有 Java 代码明确接受“Tearing”一词时，JVM 必须使用硬件
-        禁止它。在大多数硬件平台上，所有访问都可以通过
-        它们的自然宽度：字节可以通过 1 字节访问访问，短路可以通过 2 字节访问访问，
-        等。该规则的例外是布尔值，从技术上讲，布尔值可以用
-        一个位，但大多数硬件只有 1 字节的读/写。因此，JVM 通常
-        为每个布尔值分配 1 个字节。
-
-        原子指令有其特殊性。当子字原子访问完成时
-                在没有直接子词访问的平台上，CAS 仍应_as if_工作
-                布尔字段是不同的。
-
-        例如，此测试通过 ARM32，它没有字节范围的 CAS。测试验证
-                每个字段的 CAS 不冲突，并且两者都能够成功。
-
-              RESULT     SAMPLES     FREQ      EXPECT  DESCRIPTION
-          true, true  62,199,552  100.00%  Acceptable  All CASes succeed
-     */
-
-    @JCStressTest
-    @Outcome(id = "true, true", expect = ACCEPTABLE, desc = "All CASes succeed")
-    @Outcome(expect = FORBIDDEN, desc = "CAS word tearing")
-    @State
-    public static class ByteCAS {
-        static final VarHandle VH_A, VH_B;
-
-        static {
-            try {
-                VH_A = MethodHandles.lookup().findVarHandle(ByteCAS.class, "a", boolean.class);
-                VH_B = MethodHandles.lookup().findVarHandle(ByteCAS.class, "b", boolean.class);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        boolean a;
-        boolean b;
-
-        @Actor
-        public void cas1(ZZ_Result r) {
-            r.r1 = VH_A.compareAndSet(this, false, true);
-        }
-
-        @Actor
-        public void cas2(ZZ_Result r) {
-            r.r2 = VH_B.compareAndSet(this, false, true);
-        }
-    }
 
 }
