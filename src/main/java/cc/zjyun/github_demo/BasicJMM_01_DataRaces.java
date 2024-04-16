@@ -23,6 +23,7 @@ package cc.zjyun.github_demo;
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.L_Result;
 
@@ -37,6 +38,7 @@ import org.openjdk.jcstress.infra.results.L_Result;
 @Outcome(id = "class java.lang.Object", expect = Expect.ACCEPTABLE, desc = "看到对象，有效的类")
 //@Outcome(expect = Expect.FORBIDDEN, desc = "其他情况是非法的")
 @State
+@Description("两个对象的争用状态")
 public class BasicJMM_01_DataRaces {
 
 /*
@@ -59,12 +61,12 @@ public class BasicJMM_01_DataRaces {
     private Object o;
 
     @Actor
-    public void writer() {
+    public synchronized void writer() {
         o = new Object();
     }
 
     @Actor
-    public void reader(L_Result r) {
+    public synchronized void reader(L_Result r) {
         Object lo = o;
         if (lo != null) {
             try {

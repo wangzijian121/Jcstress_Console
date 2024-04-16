@@ -13,8 +13,6 @@ import static org.openjdk.jcstress.annotations.Expect.ACCEPTABLE_INTERESTING;
 
 public class TestInstructionReorder {
    /*指令重排序 导致   r.r1 = h1.a; r.r2 = h2.a; 执行顺序更改
-      ----------------------------------------------------------------------------------------------------------
-
         另一个微妙而直观的属性来自对程序如何工作的天真理解。
         在 Java 内存模型下，在没有同步的情况下，独立读取的顺序是未定义的。
         这包括对 *same* 变量的读取！
@@ -41,16 +39,16 @@ public class TestInstructionReorder {
 
         private static class Holder {
             //可以使用 volatile 解决 1, 0 有序性情况
-            volatile int a;
+            int a;
             int trap;
         }
 
         @Actor
         public void actor1() {
-            h1.a = 1;
-       /*     synchronized (lock) {
+//            h1.a = 1;
+            synchronized (lock) {
                 h1.a = 1;
-            }*/
+            }
         }
 
         @Actor
@@ -62,13 +60,14 @@ public class TestInstructionReorder {
             // 尽早执行此操作可以将编译器从移动 h1.a 和 h2.a 负载中解放出来周围，因为它不必再维护异常顺序。
             h1.trap = 0;
             h2.trap = 0;
-            r.r1 = h1.a;
-            r.r2 = h2.a;
+
+       /*     r.r1 = h1.a;
+            r.r2 = h2.a;*/
 //            可以使用synchronized 解决(1,0和0，1) 的问题。
-          /*  synchronized (lock) {
+            synchronized (lock) {
                 r.r1 = h1.a;
                 r.r2 = h2.a;
-            }*/
+            }
         }
     }
 }

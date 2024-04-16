@@ -58,6 +58,7 @@ public class BasicJMM_02_AccessAtomicity {
     @Outcome(id = "-1", expect = ACCEPTABLE, desc = "看到全部价值。")
     @Outcome(expect = FORBIDDEN, desc = "其他情况是禁止的。")
     @State
+    @Description("原子性测试")
     public static class Integers {
         int v;
 
