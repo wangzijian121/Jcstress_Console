@@ -3,8 +3,7 @@ package cc.zjyun.有序性测试;
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.II_Result;
 
-import static org.openjdk.jcstress.annotations.Expect.ACCEPTABLE;
-import static org.openjdk.jcstress.annotations.Expect.ACCEPTABLE_INTERESTING;
+import static org.openjdk.jcstress.annotations.Expect.*;
 
 /**
  * @author zijian Wang
