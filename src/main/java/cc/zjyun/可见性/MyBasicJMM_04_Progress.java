@@ -33,7 +33,7 @@ import static org.openjdk.jcstress.annotations.Expect.*;
 /**
  * @author zijian Wang
  */
-public class BasicJMM_04_Progress {
+public class MyBasicJMM_04_Progress {
 
 
 
