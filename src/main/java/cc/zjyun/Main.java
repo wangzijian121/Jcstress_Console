@@ -49,18 +49,32 @@ public class Main {
          * -v:更加详细。
          * -yield[bool]:在繁忙循环中调用Thread.yield()。
          */
-        String testName = "DoubleCheckLockTest.DoubleCheckLockSingleton";
+
+        String testName = "AccountUsedLock.Test";
 
         if (("").equals(testName)) {
             System.out.println("不建议使用全局搜索类名！");
             System.exit(0);
         }
+        /**
+         * 迭代次数=进程数 * iters * forks
+         * 样本次数通过单位执行时间time 控制 默认
+         *   if (this.mode.equalsIgnoreCase("default")) {
+         *             this.time = 1000;
+         *             this.iters = 5;
+         *             this.forks = 1;
+         *             this.batchSize = 5;
+         *         }
+         */
         String[] jcstressArgs = new String[]{
                 "-t", testName,
                 "-m", "default",
-//                "-v",
-                "-mf", "300",
-//                "-r", "./results/bin"
+                "-mf", "10",
+                "-iters", "1",
+                "-time", "4000",
+                "-maxStride", "100",
+//                "-f", "2",
+//                "-bs", "3",
         };
         org.openjdk.jcstress.Main.main(jcstressArgs);
     }

@@ -1,4 +1,4 @@
-package cc.zjyun.DCL双重检查锁并发测试;
+package cc.zjyun.github_demo.DCL双重检查锁并发测试;
 
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.I_Result;
