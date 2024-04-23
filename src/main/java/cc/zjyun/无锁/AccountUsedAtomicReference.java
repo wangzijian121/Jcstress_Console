@@ -3,20 +3,22 @@ package cc.zjyun.无锁;
 import org.openjdk.jcstress.annotations.*;
 import org.openjdk.jcstress.infra.results.I_Result;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.math.BigInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.openjdk.jcstress.annotations.Expect.ACCEPTABLE_INTERESTING;
 import static org.openjdk.jcstress.annotations.Expect.FORBIDDEN;
 
+
 /**
- * 使用原子类的的无锁并发
+ * 使用原子引用的无锁并发
  *
  * @author zijian Wang
  */
-public class AccountUsedAtomic implements Account {
+public class AccountUsedAtomicReference implements Account {
 
-    private static AtomicInteger atomicInteger = new AtomicInteger(10000);
+    private static AtomicReference<BigInteger> atomicReference = new AtomicReference<>(new BigInteger("10000"));
 
     /**
      * 获取余额
@@ -37,8 +39,9 @@ public class AccountUsedAtomic implements Account {
     public void withdrawals(int amount) {
         //CAS A ->B
         while (true) {
-            int snapShot = atomicInteger.get();
-            if (atomicInteger.compareAndSet(snapShot, amount - 10)) {
+            BigInteger snapShotValue = atomicReference.get();
+            BigInteger newValue = snapShotValue.subtract(new BigInteger(String.valueOf(amount)));
+            if (atomicReference.compareAndSet(snapShotValue, newValue)) {
                 break;
             }
         }

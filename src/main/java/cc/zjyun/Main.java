@@ -50,7 +50,7 @@ public class Main {
          * -yield[bool]:在繁忙循环中调用Thread.yield()。
          */
 
-        String testName = "AccountUsedAtomic.Test";
+        String testName = "AccountUsedAtomicReference.Test";
 
         if (("").equals(testName)) {
             System.out.println("不建议使用全局搜索类名！");
